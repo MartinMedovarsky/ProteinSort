@@ -1,0 +1,45 @@
+-Manually compile a list of categories and URLs
+	-This can be done as a dictionary
+-Scrape the Names and URLs of each main categories' sub category
+	-Each sub categories' info can be stored as dictionaries or objects??? dunno yet
+
+Getting the data:
+-Send post request that allows upto 36 items, if less than 36 retrieved, stop increasing page number.
+
+Getting nutritional information:
+-Check that nutritional information contains the word protien
+-Check for product overlap, should probably use an ID for this. Products can bein multiple categories.
+-Ensure that product is not missing weight or protein value
+	-Maybe check if protein value is extremely small
+-Weight is stored in "Package Size". Will need to parse this for different measurements
+
+
+
+
+-Database that stores the final data:
+	-Product URL
+	-Product Image URL
+	-Product Description
+	-Product Price (to be used in combination with package size to display cost)
+	-Product package size (not to be used for calcuations)
+	-Product "CupPrice". This is price per CupMeasure.
+	-Product "CupMeasure". Arbitrary value of measure for the product.
+	-Product Protein per 100g
+	-Product price per gram of protein
+	-Product Category
+	-Product Sub category
+	-Product ID?
+	-Vegetarian, true or false
+	-Allergens?
+
+-Disambiguation:
+	-PPGP: Price Per Gram of Protein
+	-PPP: Protein Per Product
+	-PPS: Protein Per Serve
+
+Calculations that need to be made:
+	-PPGP: Price Per Gram of Protein
+	-PPP: Protein Per Product
+	-PPS: Protein Per Serve
+	-Disambiguate cupMeasure and cupPrice, make sure program knows different measurements
+	
