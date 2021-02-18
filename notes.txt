@@ -21,7 +21,7 @@ Getting nutritional information:
 	-Product Image URL
 	-Product Description
 	-Product Price (to be used in combination with package size to display cost)
-	-Product package size (not to be used for calcuations)
+	-Product PackageSize (Weight of contents, not including packaging)
 	-Product "CupPrice". This is price per CupMeasure.
 	-Product "CupMeasure". Arbitrary value of measure for the product.
 	-Product Protein per 100g
@@ -42,4 +42,12 @@ Calculations that need to be made:
 	-PPP: Protein Per Product
 	-PPS: Protein Per Serve
 	-Disambiguate cupMeasure and cupPrice, make sure program knows different measurements
+
+	-find the cost of product per 100 grams, then how much protein per 100 grams. Divide cost by protein. PPGP
+	-CupMeasure seems to be in either 100g, 1kg or 1L values.
 	
+	-Should consider using product price and PackageSize to find price per 100g / price per 1kg
+	 because they will always be present. eg if Package Size = 650, 1000 / 650 = 1.53846....
+	 so multiply price by 1.53846 to find price per 1000g
+
+	 -Proteinquantity per 100 grams is ID 878 in the nutritional information json string

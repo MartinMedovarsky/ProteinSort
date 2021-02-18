@@ -1,6 +1,8 @@
 import requests
 import time
 import csv
+import re
+import json
 
 #Clears current itemData file.
 with open("itemData.csv", "w", newline="") as file:
@@ -18,17 +20,65 @@ def pageCheck(itemCount):
         return False
     else: return True
 
+
 #Parses JSON data and prepares it for adding to a database
-def calcParse(r_dict, x):
+#Calcualates values needed for the database, including price per gram of protein
+def calculations(r_dict, x):
+    PPGP = 0 #Price Per Gram of Protein
+    PPP = 0 #Protein Per Product
+    PPS = 0 #Protein Per Serve
+    pContent = 0 #Protein content per 100 grams of product
+
+    #Nutritional information string
+    nutri = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["nutritionalinformation"]
+    nutri = json.loads(nutri)
+
+    #Loop finds and parses protein per 100 grams of product
+    for i in range(len(nutri["Attributes"])):
+        if (nutri["Attributes"][i]["Id"] == 878):
+            #Removes any non numeric or decimal characters
+            pContent = re.sub('[^0-9.]','', nutri["Attributes"][i]["Value"])
+            #Checks if first character is a decimal, then removes it
+            if (pContent.find(".") == 0):
+                pContent = pContent[1:]
+
+            print("Protein per 100g: " + str(nutri["Attributes"][i]["Value"]))
+            print("pContent: " + str(pContent))
+
+        if (nutri["Attributes"][i]["Id"] == 882):
+            PPS = re.sub('[^0-9.]','', nutri["Attributes"][i]["Value"])
+            if (PPS.find(".") == 0):
+                PPS = PPS[1:]
+
+            print("PPS: " + str(PPS))
+
+    price = r_dict["Bundles"][x]["Products"][0]["Price"]
+    weight = r_dict["Bundles"][x]["Products"][0]["PackageSize"]
+
+    cupPrice = r_dict["Bundles"][x]["Products"][0]["CupPrice"]
+    cupMeasure = r_dict["Bundles"][x]["Products"][0]["CupMeasure"]
+
+    if cupMeasure == "1KG" or cupMeasure == "1L":
+        #PPGP = (cupPrice / cupMeasure) / 10
+        print("1KG or 1L")
+    elif cupMeasure == "100G":
+        print("100G")
+    elif cupMeasure == "1EA":
+        print("1EA")
+        #Will need to use unit weight in grams here
+        #Neither unit weight in grams or cup measure will work for everything unfortunately.
+    else: print("UH OH")
+
     return True
 
 #Adds data and adds item to database
 def addItem(r_dict, x):
 
+    calculations(r_dict, x)
+
     with open("itemData.csv", "a", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(["test","test","test","test","test","test","test","test","test","test","test","test","test","test","test"])
-
 
 
 #Main logic loop
@@ -61,13 +111,11 @@ for ID in categoryIDs:
             info = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["nutritionalinformation"]
             
             #Checks if the selected product contains protein nutritional information
-            if info is None or info.find("Protein") == -1:
+            if info is None or info.find("Protein") == -1 or info.find('"Protein Quantity Per 100g - Total - NIP\",\"Value\":\"0.0g\"') > 0:
                 print("No protein")
             else:
                 print("Protein!")
                 addItem(r_dict, x)
-
-
 
         currentPage += 1
         morePages = pageCheck(itemCount) 
