@@ -33,6 +33,26 @@ def calculations(r_dict, x):
     nutri = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["nutritionalinformation"]
     nutri = json.loads(nutri)
 
+    #These are used for products using price per EACH
+    price = r_dict["Bundles"][x]["Products"][0]["Price"]
+    weight = r_dict["Bundles"][x]["Products"][0]["UnitWeightInGrams"] #This weight is accurate for EA products
+
+    #These are used for products using standard price per 100g or price per KG
+    cupPrice = r_dict["Bundles"][x]["Products"][0]["CupPrice"]
+    cupMeasure = r_dict["Bundles"][x]["Products"][0]["CupMeasure"]
+    altWeight = r_dict["Bundles"][x]["Products"][0]["PackageSize"] #This weight is accurate for packaged products
+
+    #Parses altWeight to be an int representing grams
+    if (altWeight.find("KG") != -1 or altWeight.find("kg") != -1):
+        altWeight = int(re.sub('[^0-9.]','', altWeight))
+        altWeight = altWeight * 1000
+        print("Package Size: " + str(altWeight) + "g")
+    elif (altWeight.find("G") != -1 or altWeight.find("g") != -1):
+        altWeight = int(re.sub('[^0-9.]','', altWeight))
+        print("Package Size: " + str(altWeight) + "g")
+    else: print("Unknown Package Size")
+
+
     #Loop finds and parses protein per 100 grams of product
     for i in range(len(nutri["Attributes"])):
         if (nutri["Attributes"][i]["Id"] == 878):
@@ -41,6 +61,8 @@ def calculations(r_dict, x):
             #Checks if first character is a decimal, then removes it
             if (pContent.find(".") == 0):
                 pContent = pContent[1:]
+
+            pContent = float(pContent)
 
             print("Protein per 100g: " + str(nutri["Attributes"][i]["Value"]))
             print("pContent: " + str(pContent))
@@ -52,22 +74,21 @@ def calculations(r_dict, x):
 
             print("PPS: " + str(PPS))
 
-    price = r_dict["Bundles"][x]["Products"][0]["Price"]
-    weight = r_dict["Bundles"][x]["Products"][0]["PackageSize"]
-
-    cupPrice = r_dict["Bundles"][x]["Products"][0]["CupPrice"]
-    cupMeasure = r_dict["Bundles"][x]["Products"][0]["CupMeasure"]
-
+    #
     if cupMeasure == "1KG" or cupMeasure == "1L":
-        #PPGP = (cupPrice / cupMeasure) / 10
         print("1KG or 1L")
+        print("Price per 100g: " + str(cupPrice / 10))
+        PPGP = (cupPrice / 10) / pContent
     elif cupMeasure == "100G":
         print("100G")
-    elif cupMeasure == "1EA":
+        print("Price per 100g: " + str(cupPrice))
+        PPGP = cupPrice / pContent
+    elif cupMeasure == "1EA" or cupMeasure == "0":
         print("1EA")
-        #Will need to use unit weight in grams here
-        #Neither unit weight in grams or cup measure will work for everything unfortunately.
+        print("Price per 100g: " + str((100 / weight) * price))
+        PPGP = ((100 / weight) * price) / pContent 
     else: print("UH OH")
+    print("Price per gram of protein: " + str(PPGP) + "\n")
 
     return True
 
