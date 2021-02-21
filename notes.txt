@@ -51,3 +51,9 @@ Calculations that need to be made:
 	 so multiply price by 1.53846 to find price per 1000g
 
 	 -Proteinquantity per 100 grams is ID 878 in the nutritional information json string
+
+	 todo:
+	  -servings
+	  -What if it has protein per serve but not per 100g ????
+	  	-Find protein per 100g from protein per serve and serve size or ignore???
+		-Need to check that protein quantity per 100g is not listed as seperate items
