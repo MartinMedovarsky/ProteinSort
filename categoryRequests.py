@@ -7,7 +7,7 @@ import json
 #Clears current itemData file.
 with open("itemData.csv", "w", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow(["ID","name","description","imgURL","cat","subCat","price","packSize","cupPrice","cupMeasure","PPGP","PPS","veg","allergens"])
+        writer.writerow(["ID","name","description","imgURL","imgURLMed","dep","cat","price","packSize","cupPrice","cupMeasure","servings","pContent","PPGP","PPS"])
 
 #The ID codes used within API calls
 #Using categories instead of all to illiminate non-food categories
@@ -43,8 +43,8 @@ def calculations(r_dict, x):
     altWeight = r_dict["Bundles"][x]["Products"][0]["PackageSize"] #This weight is accurate for packaged products
 
     #Parses altWeight to be an float representing grams
-    #Checks that the weight isnt variable eg. 1.4 kg - 2.4 kg
-    if altWeight.find("-") == -1:
+    #Checks that the weight isnt variable or minimum eg. 1.4 kg - 2.4 kg
+    if altWeight.find("-") == -1 and altWeight.find("min") == -1:
         if (altWeight.find("KG") != -1 or altWeight.find("kg") != -1):
             altWeight = altWeight.lower()
             print(altWeight)
@@ -70,7 +70,11 @@ def calculations(r_dict, x):
             if (pContent.find(".") == 0):
                 pContent = pContent[1:]
 
-            pContent = float(pContent)
+            try:
+                pContent = float(pContent)
+            except:
+                print("Issue with protein content, likely multiple items")
+                return None
 
             print("Protein per 100g: " + str(nutri["Attributes"][i]["Value"]))
             print("pContent: " + str(pContent))
@@ -80,7 +84,12 @@ def calculations(r_dict, x):
             if (PPS.find(".") == 0):
                 PPS = PPS[1:]
 
-            PPS = float(PPS)
+            try:
+                PPS = float(PPS)
+            except:
+                print("Issue with protein serving")
+                return None
+
             print("PPS: " + str(PPS))
 
         if (nutri["Attributes"][i]["Id"] == 544):
@@ -111,20 +120,41 @@ def calculations(r_dict, x):
     else: print("UH OH")
     print("Price per gram of protein: " + str(PPGP) + "\n")
 
-    return True
+    return PPGP, PPS, pContent, servings, cupPrice
 
 #Adds data and adds item to database
 def addItem(r_dict, x):
+    
+    try: 
+        PPGP, PPS, pContent, servings, cupPrice = calculations(r_dict, x)
+    except:
+        return
 
-    calculations(r_dict, x)
+    print ("PPGP: " + str(PPGP) + " PPS: " + str(PPS) + " pContent: " + str(pContent) + " servings: " + str(servings))
+
+    ID = r_dict["Bundles"][x]["Products"][0]["Stockcode"] #used as ID and for URL
+    name = r_dict["Bundles"][x]["Name"]
+    description = r_dict["Bundles"][x]["Products"][0]["RichDescription"]
+    imgURL = r_dict["Bundles"][x]["Products"][0]["LargeImageFile"]
+    imgURLMed = r_dict["Bundles"][x]["Products"][0]["MediumImageFile"]
+    dep = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["piesdepartmentnamesjson"][1:-1]
+    cat = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["piescategorynamesjson"][1:-1]
+    price = r_dict["Bundles"][x]["Products"][0]["Price"]
+    packSize = r_dict["Bundles"][x]["Products"][0]["PackageSize"]
+    cupMeasure = r_dict["Bundles"][x]["Products"][0]["CupMeasure"]
 
     with open("itemData.csv", "a", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow(["test","test","test","test","test","test","test","test","test","test","test","test","test","test"])
 
+        #Catches any outliers. Often to do with strange text encoding
+        try:
+            writer.writerow([ID, name, description, imgURL, imgURLMed, dep, cat, price, packSize, cupPrice, cupMeasure, servings, pContent, PPGP, PPS])
+        except:
+            return
 
 #Main logic loop
 #Outer loop cycles through categories
+totalItems = 0 #Used to count total entries, even discarded ones
 for ID in categoryIDs:
     morePages = True
     currentPage = 1
@@ -140,23 +170,39 @@ for ID in categoryIDs:
         r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', data=payload)
         r_dict = r.json()
 
+        #Amount of item in the api request. Normally 32 but can be lower.
         itemCount = len(r_dict["Bundles"])
 
-        #print(r_dict)
-        #print(r_dict["TotalRecordCount"])
-
-        #print("First Item name " + r_dict["Bundles"][0]["Name"])
         print("Page number " + str(currentPage))
 
         for x in range(itemCount):
+            totalItems += 1
+            print(totalItems)
+
             print(r_dict["Bundles"][x]["Name"])
             info = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["nutritionalinformation"]
             price = r_dict["Bundles"][x]["Products"][0]["Price"]
             
             #Checks if the selected product contains protein nutritional information
-            if info is None or info.find("Protein Quantity Per 100g") == -1 or info.find('"Protein Quantity Per 100g - Total - NIP\",\"Value\":\"0.0g\"') > 0:
+            #Could use array and loop to get rid of some of these elifs
+            conditions = ["\"0", "null", "\"Approx. 0", "\"Approx.0", "\"<0"]
+
+            #containsP = True
+
+            #for cond in conditions:
+            #    if info.find('Protein Quantity Per 100g - Total - NIP\",\"Value\":' + cond) > 0:
+            #        print("No protein \n")
+            #        containsP = False
+
+            if info is None or info.find("Protein Quantity Per 100g") == -1 or info.find('"Protein Quantity Per 100g - Total - NIP\",\"Value\":\"0') > 0:
                 print("No protein \n")
             elif info.find("Protein Quantity Per 100g - Total - NIP\",\"Value\":null") > 0:
+                print("No protein \n")
+            elif info.find('"Protein Quantity Per 100g - Total - NIP\",\"Value\":\"Approx. 0') > 0:
+                print("No protein \n")
+            elif info.find('"Protein Quantity Per 100g - Total - NIP\",\"Value\":\"Approx.0') > 0:
+                print("No protein \n")
+            elif info.find('"Protein Quantity Per 100g - Total - NIP\",\"Value\":\"<0') > 0:
                 print("No protein \n")
             elif price is None:
                 print("No price \n")
@@ -166,5 +212,5 @@ for ID in categoryIDs:
 
         currentPage += 1
         morePages = pageCheck(itemCount) 
-        time.sleep(3)
+        time.sleep(2)
     

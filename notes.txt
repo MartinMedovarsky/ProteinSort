@@ -57,3 +57,8 @@ Calculations that need to be made:
 	  -What if it has protein per serve but not per 100g ????
 	  	-Find protein per 100g from protein per serve and serve size or ignore???
 		-Need to check that protein quantity per 100g is not listed as seperate items
+	  -Cut out duplicates
+
+(Not compensating for duplicates)
+total number of items: 12255
+total number of suitable items: 8141
