@@ -9,10 +9,6 @@ with open("itemData.csv", "w", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(["ID","name","description","imgURL","imgURLMed","dep","cat","price","packSize","cupPrice","cupMeasure","servings","pContent","PPGP","PPS"])
 
-#The ID codes used within API calls
-#Using categories instead of all to illiminate non-food categories
-categoryIDs = ["1-E5BEE36E","1_D5A2236","1_DEB537E","1_6E4F4E4","1_39FD49C","1_ACA2FC2","1_5AF3A0A"]
-
 
 #Checks if there are any more pages in the category
 def pageCheck(itemCount):
@@ -166,6 +162,11 @@ def addItem(r_dict, x):
 
 #Main logic loop
 #Outer loop cycles through categories
+
+#The ID codes used within API calls
+#Using categories instead of all to illiminate non-food categories
+categoryIDs = ["1-E5BEE36E","1_D5A2236","1_DEB537E","1_6E4F4E4","1_39FD49C","1_ACA2FC2","1_5AF3A0A"]
+
 totalItems = 0 #Used to count total entries, even discarded ones
 for ID in categoryIDs:
     morePages = True
