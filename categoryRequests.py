@@ -122,35 +122,47 @@ def calculations(r_dict, x):
 
     return PPGP, PPS, pContent, servings, cupPrice
 
+
+addedIDs = []
 #Adds data and adds item to database
 def addItem(r_dict, x):
-    
-    try: 
-        PPGP, PPS, pContent, servings, cupPrice = calculations(r_dict, x)
-    except:
-        return
-
-    print ("PPGP: " + str(PPGP) + " PPS: " + str(PPS) + " pContent: " + str(pContent) + " servings: " + str(servings))
 
     ID = r_dict["Bundles"][x]["Products"][0]["Stockcode"] #used as ID and for URL
-    name = r_dict["Bundles"][x]["Name"]
-    description = r_dict["Bundles"][x]["Products"][0]["RichDescription"]
-    imgURL = r_dict["Bundles"][x]["Products"][0]["LargeImageFile"]
-    imgURLMed = r_dict["Bundles"][x]["Products"][0]["MediumImageFile"]
-    dep = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["piesdepartmentnamesjson"][1:-1]
-    cat = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["piescategorynamesjson"][1:-1]
-    price = r_dict["Bundles"][x]["Products"][0]["Price"]
-    packSize = r_dict["Bundles"][x]["Products"][0]["PackageSize"]
-    cupMeasure = r_dict["Bundles"][x]["Products"][0]["CupMeasure"]
+    duplicate = False
 
-    with open("itemData.csv", "a", newline="") as file:
-        writer = csv.writer(file)
+    #Checking that the item being added doesn't already exist
+    for i in addedIDs:
+        if ID == i:
+            duplicate = True
 
-        #Catches any outliers. Often to do with strange text encoding
-        try:
-            writer.writerow([ID, name, description, imgURL, imgURLMed, dep, cat, price, packSize, cupPrice, cupMeasure, servings, pContent, PPGP, PPS])
+    if duplicate == False:
+        try: 
+            PPGP, PPS, pContent, servings, cupPrice = calculations(r_dict, x)
         except:
             return
+
+        print ("PPGP: " + str(PPGP) + " PPS: " + str(PPS) + " pContent: " + str(pContent) + " servings: " + str(servings))
+
+        name = r_dict["Bundles"][x]["Name"]
+        description = r_dict["Bundles"][x]["Products"][0]["RichDescription"]
+        imgURL = r_dict["Bundles"][x]["Products"][0]["LargeImageFile"]
+        imgURLMed = r_dict["Bundles"][x]["Products"][0]["MediumImageFile"]
+        dep = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["piesdepartmentnamesjson"][1:-1]
+        cat = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["piescategorynamesjson"][1:-1]
+        price = r_dict["Bundles"][x]["Products"][0]["Price"]
+        packSize = r_dict["Bundles"][x]["Products"][0]["PackageSize"]
+        cupMeasure = r_dict["Bundles"][x]["Products"][0]["CupMeasure"]
+
+        with open("itemData.csv", "a", newline="") as file:
+            writer = csv.writer(file)
+
+            #Catches any outliers. Often to do with strange text encoding
+            try:
+                writer.writerow([ID, name, description, imgURL, imgURLMed, dep, cat, price, packSize, cupPrice, cupMeasure, servings, pContent, PPGP, PPS])
+            except:
+                return
+
+        addedIDs.append(ID)
 
 #Main logic loop
 #Outer loop cycles through categories

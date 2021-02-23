@@ -58,7 +58,12 @@ Calculations that need to be made:
 	  	-Find protein per 100g from protein per serve and serve size or ignore???
 		-Need to check that protein quantity per 100g is not listed as seperate items
 	  -Cut out duplicates
+	  	-Can do this by creating an array and adding to it each time an item is added
+		 check the array before adding to make sure an ID isnt already present
 
 (Not compensating for duplicates)
 total number of items: 12255
 total number of suitable items: 8141
+
+(duplicates removed)
+Total number of suitable items: 7579
