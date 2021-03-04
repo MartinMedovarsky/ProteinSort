@@ -3,8 +3,35 @@ import time
 import csv
 import re
 import json
+import sqlite3
 
-#Clears current itemData file.
+#Creating SQLite Database
+conn = sqlite3.connect('itemData.db')
+c = conn.cursor()
+
+c.execute(""" DROP TABLE IF EXISTS itemDATA """)
+
+c.execute("""CREATE TABLE itemDATA (
+                ID INTEGER PRIMARY KEY,
+                name TEXT,
+                description TEXT,
+                imgURL TEXT,
+                imgURLMed TEXT,
+                dep TEXT,
+                cat TEXT,
+                price FLOAT,
+                packSize TEXT,
+                cupPrice FLOAT,
+                cupMeasure TEXT,
+                servings FLOAT,
+                pContent FLOAT,
+                PPGP FLOAT,
+                PPS FLOAT
+)""")
+
+conn.commit()
+
+#Clears current itemData CSV file.
 with open("itemData.csv", "w", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(["ID","name","description","imgURL","imgURLMed","dep","cat","price","packSize","cupPrice","cupMeasure","servings","pContent","PPGP","PPS"])
@@ -103,10 +130,14 @@ def calculations(r_dict, x):
         print("1KG or 1L")
         print("Price per 100g: " + str(cupPrice / 10))
         PPGP = (cupPrice / 10) / pContent
-    elif cupMeasure == "100G":
+    elif cupMeasure == "100G" or cupMeasure == "100ML":
         print("100G")
         print("Price per 100g: " + str(cupPrice))
         PPGP = cupPrice / pContent
+    elif cupMeasure == "10G" or cupMeasure == "10ML":
+        print("10G")
+        print("Price per 10g: " + str(cupPrice * 10))
+        PPGP = (cupPrice * 10) / pContent
     elif cupMeasure == "1EA" or cupMeasure == "0":
         print("1EA")
         print(weight)
@@ -154,9 +185,15 @@ def addItem(r_dict, x):
 
             #Catches any outliers. Often to do with strange text encoding
             try:
+                #Adding row to CSV
                 writer.writerow([ID, name, description, imgURL, imgURLMed, dep, cat, price, packSize, cupPrice, cupMeasure, servings, pContent, PPGP, PPS])
             except:
                 return
+
+        c.execute(""" INSERT INTO itemDATA (ID, name, description, imgURL, imgURLMed, dep, cat, price, packSize, cupPrice, cupMeasure, servings, pContent, PPGP, PPS) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                    (ID, name, description, imgURL, imgURLMed, dep, cat, price, packSize, cupPrice, cupMeasure, servings, pContent, PPGP, PPS))
+        conn.commit()
 
         addedIDs.append(ID)
 
@@ -225,5 +262,5 @@ for ID in categoryIDs:
 
         currentPage += 1
         morePages = pageCheck(itemCount) 
-        time.sleep(2)
+        time.sleep(1.5)
     
