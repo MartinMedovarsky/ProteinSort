@@ -168,6 +168,10 @@ def addItem(r_dict, x):
         except:
             return
 
+        #Final check to try catch any outliers
+        if (PPGP == 0):
+            return
+
         print ("PPGP: " + str(PPGP) + " PPS: " + str(PPS) + " pContent: " + str(pContent) + " servings: " + str(servings))
 
         name = r_dict["Bundles"][x]["Name"]
@@ -201,7 +205,7 @@ def addItem(r_dict, x):
 #Outer loop cycles through categories
 
 #The ID codes used within API calls
-#Using categories instead of all to illiminate non-food categories
+#Using categories instead of all to eliminate non-food categories
 categoryIDs = ["1-E5BEE36E","1_D5A2236","1_DEB537E","1_6E4F4E4","1_39FD49C","1_ACA2FC2","1_5AF3A0A"]
 
 totalItems = 0 #Used to count total entries, even discarded ones

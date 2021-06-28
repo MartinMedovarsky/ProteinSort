@@ -61,6 +61,8 @@ Calculations that need to be made:
 	  	-Can do this by creating an array and adding to it each time an item is added
 		 check the array before adding to make sure an ID isnt already present
 
+	  -777840 sauce lists protein as "per 100 grams of sauce: 1.6g" What do I even do anymore?!?!?!s
+
 (Not compensating for duplicates)
 total number of items: 12255
 total number of suitable items: 8141
