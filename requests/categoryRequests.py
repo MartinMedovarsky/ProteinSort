@@ -221,7 +221,11 @@ for ID in categoryIDs:
                     "url":"a",
                     "formatObject":"{}"}
 
-        r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', data=payload)
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0",
+                    "Origin": "https://www.woolworths.com.au"}
+
+        r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', data=payload, headers=headers)
+        print(r)
         r_dict = r.json()
 
         #Amount of item in the api request. Normally 32 but can be lower.
