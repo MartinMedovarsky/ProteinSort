@@ -1,3 +1,9 @@
+TODO:
+-fix sauces in db
+
+
+-------------------------------------------------------------------------------------
+
 -Manually compile a list of categories and URLs
 	-This can be done as a dictionary
 -Scrape the Names and URLs of each main categories' sub category
@@ -69,3 +75,22 @@ total number of suitable items: 8141
 
 (duplicates removed)
 Total number of suitable items: 7579
+
+
+
+Web stuff:
+
+React problems / things to consider:
+-Infinite scroll component
+-React Table
+-how database and express work
+
+search api params:
+query, sort column, sort up / down, page number 
+
+-Think about how pagination will work with express.
+	-Maybe perform query first, then sort, then pagination, then return page based set?
+
+Return individual product using api?
+-This is important as in a general search we would not need certain details such as description / id etc.
+-Would use this for displaying individual products
