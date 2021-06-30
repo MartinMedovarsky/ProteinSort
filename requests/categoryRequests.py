@@ -150,6 +150,12 @@ def calculations(r_dict, x):
     return PPGP, PPS, pContent, servings, cupPrice
 
 
+#Method returns string cleaned of residual html tags
+#def cleanHTML(str):
+#    cleanr = re.compile('<.*?>')
+#    cleantext = re.sub(cleanr, '', str)
+#    return cleantext
+
 addedIDs = []
 #Adds data and adds item to database
 def addItem(r_dict, x):
@@ -176,6 +182,7 @@ def addItem(r_dict, x):
 
         name = r_dict["Bundles"][x]["Name"]
         description = r_dict["Bundles"][x]["Products"][0]["RichDescription"]
+        #print(cleanHTML(description))
         imgURL = r_dict["Bundles"][x]["Products"][0]["LargeImageFile"]
         imgURLMed = r_dict["Bundles"][x]["Products"][0]["MediumImageFile"]
         dep = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["piesdepartmentnamesjson"][1:-1]
@@ -225,7 +232,6 @@ for ID in categoryIDs:
                     "Origin": "https://www.woolworths.com.au"}
 
         r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', data=payload, headers=headers)
-        print(r)
         r_dict = r.json()
 
         #Amount of item in the api request. Normally 32 but can be lower.
