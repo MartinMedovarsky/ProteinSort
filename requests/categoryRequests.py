@@ -99,6 +99,10 @@ def calculations(r_dict, x):
                 print("Issue with protein content, likely multiple items")
                 return None
 
+            #Checks that pContent isn't greater than 100 (invalid protein ammount)
+            if (pContent >= 100):
+                return None
+
             print("Protein per 100g: " + str(nutri["Attributes"][i]["Value"]))
             print("pContent: " + str(pContent))
 
@@ -174,9 +178,11 @@ def addItem(r_dict, x):
         except:
             return
 
-        #Final check to try catch any outliers
+        #Final checks to try catch any outliers
         if (PPGP == 0):
             return
+
+        
 
         print ("PPGP: " + str(PPGP) + " PPS: " + str(PPS) + " pContent: " + str(pContent) + " servings: " + str(servings))
 
@@ -228,7 +234,7 @@ for ID in categoryIDs:
                     "url":"a",
                     "formatObject":"{}"}
 
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0",
+        headers = {"User-Agent": "Marty Epic User Agent bruhhhhhh",
                     "Origin": "https://www.woolworths.com.au"}
 
         r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', data=payload, headers=headers)
@@ -277,4 +283,3 @@ for ID in categoryIDs:
         currentPage += 1
         morePages = pageCheck(itemCount) 
         time.sleep(1.5)
-    
