@@ -89,7 +89,7 @@ search api params:
 query, sort column, sort up / down, page number 
 
 -Think about how pagination will work with express.
-	-Maybe perform query first, then sort, then pagination, then return page based set?
+	-Maybe perform query first, consider item category, then sort, then pagination, then return page based set?
 
 Return individual product using api?
 -This is important as in a general search we would not need certain details such as description / id etc.
