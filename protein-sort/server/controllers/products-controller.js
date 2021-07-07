@@ -1,6 +1,9 @@
 
 //import database
-const knex = require('./../db')
+var knex = require('knex')({
+    client: 'sqlite3',
+    connection: { filename: '../db/itemDATA.db' }
+  })
 
 //Complex product query
 exports.complex = async (req, res) => {
