@@ -1,6 +1,13 @@
 const express = require('express');
 
-const app = express();
+//Importing dependencies
+//const app = express();
+const express = require('express')
+const bodyParser = require('body-parser')
+const compression = require('compression')
+const cors = require('cors')
+const helmet = require('helmet')
+
 
 app.get('/api/products', (req, res) => {
     const products = [
