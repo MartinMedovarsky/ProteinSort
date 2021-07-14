@@ -2,14 +2,19 @@ import './styles/App.css';
 import React, { useState } from 'react';
 import useProdSearch from './useProdSearch';
 
-function App() {
+export default function App() {
+  const [query, setQuery] = useState('')
+
+  function handleSearch(e) {
+    setQuery(e.target.value)
+  }
+
   useProdSearch(query)
   return (
     <>
-      <input type="text"></input>
+      <input type="text" onChange={handleSearch}></input>
       <input type="button"></input>
     </>
   );
 }
 
-export default App;
