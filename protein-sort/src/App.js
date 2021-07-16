@@ -5,12 +5,21 @@ import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron
 
 export default function App() {
   const [query, setQuery] = useState('')
+  const [dropdown, setdrop] = useState('All Departments')
 
   function handleSearch(e) {
     setQuery(e.target.value)
   }
 
+  function handleDropDown(e){
+    setdrop(e)
+  }
+
   useProdSingle(query)
+
+  //Categories are actually departments, because there are too many categories
+
+
   return (
     <>
       <Container fluid='lg'>
@@ -20,27 +29,26 @@ export default function App() {
         </Jumbotron>
 
         <InputGroup className="mb-3">
-          <FormControl aria-label="Text input with dropdown button" />
+          <FormControl aria-label="Text input with dropdown button" onChange={handleSearch} />
 
           <DropdownButton
             variant="outline-secondary"
-            title="Dropdown"
+            title={dropdown}
             id="input-group-dropdown-2"
             align="end"
           >
-            <Dropdown.Item href="#">Action</Dropdown.Item>
-            <Dropdown.Item href="#">Another action</Dropdown.Item>
-            <Dropdown.Item href="#">Something else here</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item href="#">Separated link</Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>All Departments</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Meat, Seafood &amp; Deli</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Fruit &amp; Veg</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Diary, Eggs &amp; Fridge</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Bakery</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Freezer</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Pantry</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Drink</div></Dropdown.Item>
           </DropdownButton>
         </InputGroup>
 
       </Container>
-
-
-      <input type="text" onChange={handleSearch}></input>
-      <button class="btn btn-primary" type="submit">Button</button>
       
     </>
   );

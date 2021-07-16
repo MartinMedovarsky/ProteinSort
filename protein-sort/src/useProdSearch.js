@@ -3,8 +3,6 @@ import axios from 'axios'
 
 export function useProdSingle(query) {
 
-    console.log("Query: " + query)
-
     useEffect(() => {
         let cancel
         axios({
