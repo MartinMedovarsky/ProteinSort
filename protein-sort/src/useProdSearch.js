@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-export default function useProdSearch(query) {
+export function useProdSingle(query) {
 
     console.log("Query: " + query)
 
@@ -22,3 +22,9 @@ export default function useProdSearch(query) {
 
     return null
 }
+
+export function useProdComplex() {
+
+    return null
+}
+
