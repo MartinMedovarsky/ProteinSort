@@ -21,8 +21,24 @@ export function useProdSingle(query) {
     return null
 }
 
-export function useProdComplex() {
+export function useProdComplex(query, dropdown) {
+
+    useEffect(() => {
+        let cancel
+        axios({
+            method: 'GET',
+            url: 'http://localhost:5000/products/complex',
+            params: { search: query, dep: dropdown, page: 1},
+            cancelToken: new axios.CancelToken(c => cancel = c)    
+        }).then(res => {
+            console.log(res.data)
+        }).catch(e => {
+            if (axios.isCancel(e)) return
+        })
+        return () => cancel()
+    }, [query, dropdown])
 
     return null
+
 }
 

@@ -1,21 +1,22 @@
 import './styles/App.css';
 import React, { useState } from 'react';
 import { useProdSingle, useProdComplex } from './useProdSearch';
-import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron } from 'react-bootstrap';
+import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron, Table } from 'react-bootstrap';
 
 export default function App() {
   const [query, setQuery] = useState('')
-  const [dropdown, setdrop] = useState('All Departments')
+  const [dropdown, setDropdown] = useState('All Departments')
 
   function handleSearch(e) {
     setQuery(e.target.value)
   }
 
+  //Handles changing of the dropdown title selected
   function handleDropDown(e){
-    setdrop(e)
+    setDropdown(e.target.textContent)
   }
 
-  useProdSingle(query)
+  useProdComplex(query, dropdown)
 
   //Categories are actually departments, because there are too many categories
 
@@ -37,16 +38,43 @@ export default function App() {
             id="input-group-dropdown-2"
             align="end"
           >
-            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>All Departments</div></Dropdown.Item>
-            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Meat, Seafood &amp; Deli</div></Dropdown.Item>
-            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Fruit &amp; Veg</div></Dropdown.Item>
-            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Diary, Eggs &amp; Fridge</div></Dropdown.Item>
-            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Bakery</div></Dropdown.Item>
-            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Freezer</div></Dropdown.Item>
-            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Pantry</div></Dropdown.Item>
-            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e.target.textContent)}>Drink</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>All Departments</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Meat, Seafood &amp; Deli</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Fruit &amp; Veg</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Diary, Eggs &amp; Fridge</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Bakery</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Freezer</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Pantry</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Drink</div></Dropdown.Item>
           </DropdownButton>
         </InputGroup>
+
+
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Price</th>
+              <th>Size</th>
+              <th>Price / g of Protein</th>
+              <th>Total Protein</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+            </tr>
+            
+          </tbody>
+        </Table>
 
       </Container>
       
