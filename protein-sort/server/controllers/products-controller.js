@@ -21,7 +21,7 @@ exports.complex = async (req, res) => {
     //var sortType = req.body.sortType //What are we sorting by
     //var sortDir = req.body.sortDir  //Sort ascending / descending
     var page = req.query.page 
-    var perPage = 15
+    var perPage = 20
 
     console.log(department)
 
@@ -29,7 +29,7 @@ exports.complex = async (req, res) => {
         .select('*')
         .from('itemData')
         .where('name', 'like', `%${search}%`) //%% chars search for term in any position
-        .paginate({ perPage: perPage, currentPage: page})
+        .paginate({ perPage: perPage, currentPage: page, isLengthAware: true})
         .then(productData => {
             //send the individual product
             res.json(productData)

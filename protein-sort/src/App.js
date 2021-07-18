@@ -1,5 +1,5 @@
 import './styles/App.css';
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { useProdSingle, useProdComplex } from './useProdSearch';
 import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron, Table } from 'react-bootstrap';
 
@@ -7,16 +7,43 @@ export default function App() {
   const [query, setQuery] = useState('')
   const [dropdown, setDropdown] = useState('All Departments')
 
+  const [pageNumber, setPageNumber] = useState(1)
+
+  const {
+    products,
+    hasMore,
+    loading,
+    error
+  } = useProdComplex(query, dropdown, pageNumber)
+
+  //Used to load more items when scrolling
+  //Whenever an element containing lastProdElementRef
+  //Is created the Callback below is called
+  const observer = useRef()
+  const lastProdElementRef = useCallback(node => {
+    //Do nothing if loading
+    if (loading) return
+
+    if(observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver(entries => {
+      //Paginate if last element is reached on page and there are more
+      if (entries[0].isIntersecting && hasMore){
+        console.log("visible")
+        setPageNumber(prevPageNumber => prevPageNumber + 1)
+      }
+    })
+    if (node) observer.current.observe(node)
+  }, [loading, hasMore])
+
   function handleSearch(e) {
     setQuery(e.target.value)
+    setPageNumber(1)
   }
 
   //Handles changing of the dropdown title selected
   function handleDropDown(e){
     setDropdown(e.target.textContent)
   }
-
-  useProdComplex(query, dropdown)
 
   //Categories are actually departments, because there are too many categories
 
@@ -58,23 +85,45 @@ export default function App() {
               <th>Department</th>
               <th>Price</th>
               <th>Size</th>
-              <th>Price / g of Protein</th>
-              <th>Total Protein</th>
+              <th>$ per g of Protein</th>
+              <th>Protein per 100g</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
+            
+            {products.map((product, index) => {
+              if (products.length === index + 1){
+                return (
+                  <tr ref={lastProdElementRef} key={product.ID}>
+                    <td>{index + 1}</td>
+                    <td>{product.name}</td>
+                    <td>{product.dep}</td>
+                    <td>${product.price}</td>
+                    <td>{product.packSize}</td>
+                    <td>${product.PPGP.toFixed(3)}</td>
+                    <td>{product.pContent}g</td>
+                  </tr>
+                );
+              } else {
+                return (
+                  <tr key={product.ID}>
+                    <td>{index + 1}</td>
+                    <td>{product.name}</td>
+                    <td>{product.dep}</td>
+                    <td>${product.price}</td>
+                    <td>{product.packSize}</td>
+                    <td>${product.PPGP.toFixed(3)}</td>
+                    <td>{product.pContent}g</td>
+                  </tr>
+                );
+              }
+            })}
             
           </tbody>
         </Table>
+
+        <div>{loading && 'Loading...'}</div>
+        <div>{error && 'Error'}</div>
 
       </Container>
       
