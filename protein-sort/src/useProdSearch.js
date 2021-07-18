@@ -29,7 +29,7 @@ export function useProdComplex(query, dropdown, pageNumber) {
 
     useEffect(() => {
         setProducts([])
-    }, [query])
+    }, [query, dropdown])
 
     useEffect(() => {
         setLoading(true)

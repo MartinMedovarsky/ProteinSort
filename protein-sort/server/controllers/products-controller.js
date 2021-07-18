@@ -23,12 +23,19 @@ exports.complex = async (req, res) => {
     var page = req.query.page 
     var perPage = 20
 
+    //Make deparment equal nothing if all departments are selected
+    if (department == "All Departments") {
+        department = ""
+    } 
+
     console.log(department)
 
     knex
         .select('*')
         .from('itemData')
         .where('name', 'like', `%${search}%`) //%% chars search for term in any position
+        .andWhere('dep', 'like', `%${department}%`)
+        .orderBy('PPGP')
         .paginate({ perPage: perPage, currentPage: page, isLengthAware: true})
         .then(productData => {
             //send the individual product
