@@ -68,11 +68,11 @@ export default function App() {
             <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>All Departments</div></Dropdown.Item>
             <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Meat, Seafood &amp; Deli</div></Dropdown.Item>
             <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Fruit &amp; Veg</div></Dropdown.Item>
-            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Diary, Eggs &amp; Fridge</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Dairy, Eggs &amp; Fridge</div></Dropdown.Item>
             <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Bakery</div></Dropdown.Item>
             <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Freezer</div></Dropdown.Item>
             <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Pantry</div></Dropdown.Item>
-            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Drink</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Drinks</div></Dropdown.Item>
           </DropdownButton>
         </InputGroup>
 
@@ -92,31 +92,23 @@ export default function App() {
           <tbody>
             
             {products.map((product, index) => {
-              if (products.length === index + 1){
-                return (
-                  <tr ref={lastProdElementRef} key={product.ID}>
-                    <td>{index + 1}</td>
-                    <td>{product.name}</td>
-                    <td>{product.dep}</td>
-                    <td>${product.price}</td>
-                    <td>{product.packSize}</td>
-                    <td>${product.PPGP.toFixed(3)}</td>
-                    <td>{product.pContent}g</td>
-                  </tr>
-                );
-              } else {
-                return (
-                  <tr key={product.ID}>
-                    <td>{index + 1}</td>
-                    <td>{product.name}</td>
-                    <td>{product.dep}</td>
-                    <td>${product.price}</td>
-                    <td>{product.packSize}</td>
-                    <td>${product.PPGP.toFixed(3)}</td>
-                    <td>{product.pContent}g</td>
-                  </tr>
-                );
-              }
+
+              var lastProduct = false
+              /* If statement in conjunction with ternary operator below determines if final row*/
+
+              if (products.length === index + 1){ lastProduct = true }
+
+              return (
+                <tr ref={lastProduct ? lastProdElementRef : null} key={product.ID}>
+                  <td>{index + 1}</td>
+                  <td>{product.name}</td>
+                  <td>{product.dep}</td>
+                  <td>${product.price}</td>
+                  <td>{product.packSize}</td>
+                  <td>${product.PPGP.toFixed(3)}</td>
+                  <td>{product.pContent}g</td>
+                </tr>
+              );
             })}
             
           </tbody>

@@ -28,7 +28,6 @@ exports.complex = async (req, res) => {
         department = ""
     } 
 
-    console.log(department)
 
     knex
         .select('*')
