@@ -53,7 +53,7 @@ exports.productSingle = async (req, res) => {
     knex
         .select('*')
         .from('itemData')
-        .where('ID', 25) //find the product based on id
+        .where('ID', req.query.id) //find the product based on id
         .then(productData => {
             //send the individual product
             res.json(productData)

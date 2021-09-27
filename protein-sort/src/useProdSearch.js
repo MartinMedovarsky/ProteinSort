@@ -1,24 +1,28 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-export function useProdSingle(query) {
+export function useProdSingle(single) {
+    const [singleProduct, setSingleProduct] = useState()
 
     useEffect(() => {
+        setSingleProduct()
+
+        console.log("USEPRODSINGLE SINGLE: " + single)
         let cancel
         axios({
             method: 'GET',
             url: 'http://localhost:5000/products/single',
-            params: { id: query },
+            params: { id: single },
             cancelToken: new axios.CancelToken(c => cancel = c)    
         }).then(res => {
-            console.log(res.data)
+            setSingleProduct(res.data)
         }).catch(e => {
             if (axios.isCancel(e)) return
         })
         return () => cancel()
-    }, [query])
+    }, [single])
 
-    return null
+    return { singleProduct }
 }
 
 export function useProdComplex(query, dropdown, pageNumber) {

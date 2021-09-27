@@ -1,9 +1,14 @@
 import './styles/App.css';
 import React, { useState, useRef, useCallback } from 'react';
 import { useProdSingle, useProdComplex } from './useProdSearch';
-import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron, Table, Card, Accordion, Button } from 'react-bootstrap';
+import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron, Table, Button, Modal} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/js/src/collapse.js";
+
+//Notes for doing modals:
+//Have const that represent all data in modal
+//onclick of table row call method to get data by item id
+//set data in modal const, launch modal
 
 export default function App() {
   const [query, setQuery] = useState('')
@@ -49,6 +54,30 @@ export default function App() {
 
   //Categories are actually departments, because there are too many categories
 
+  //Constants for handling modal 
+  const [show, setShow] = useState(false);
+  //Product ID for search
+  const [single, setSingle] = useState('1')
+
+  //Returned product info
+  const singleProduct = useProdSingle(single)
+
+  function handleSingle(e) {
+    setSingle(e)
+    console.log("e: " + e)
+    console.log("Singleproduct below: ")
+    console.log(singleProduct)
+
+    //Query data for single item
+
+    //Display modal
+    handleShow()
+  }
+
+  //Closing and opening modal
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
 
   return (
     <>
@@ -79,57 +108,71 @@ export default function App() {
         </InputGroup>
 
 
-        <Accordion>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Modal heading</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleClose}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        
+
+        {/* <Accordion>
             <Accordion.Toggle as={Card.Header} eventKey="0">
               Click me!
             </Accordion.Toggle>
             <Accordion.Collapse eventKey="0">
               <Card.Body>Hello! I'm the body</Card.Body>
             </Accordion.Collapse>
-        </Accordion>
+        </Accordion> */}
 
-        <Accordion>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Price</th>
-                <th>Size</th>
-                <th>$ per g of Protein</th>
-                <th>Protein per 100g</th>
-              </tr>
-            </thead>
-            <tbody>
-              
-              {products.map((product, index) => {
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Price</th>
+              <th>Size</th>
+              <th>$ per g of Protein</th>
+              <th>Protein per 100g</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            {products.map((product, index) => {
 
-                var lastProduct = false
-                /* If statement in conjunction with ternary operator below determines if final row*/
+              var lastProduct = false
+              /* If statement in conjunction with ternary operator below determines if final row*/
 
-                if (products.length === index + 1){ lastProduct = true }
+              if (products.length === index + 1){ lastProduct = true }
 
-                return (
-                  <>
-                  <tr ref={lastProduct ? lastProdElementRef : null} key={product.ID} 
-                  data-toggle="collapse" data-target={"#accordion" + index} class="clickable">
-                    <td>{index + 1}</td>
-                    <td>{product.name}</td>
-                    <td>{product.dep}</td>
-                    <td>${product.price}</td>
-                    <td>{product.packSize}</td>
-                    <td>${product.PPGP.toFixed(3)}</td>
-                    <td>{product.pContent}g</td>
-                  </tr>
-                  <div id={"#accordion" + index} class="collapse">AAAAAAAAAAAAA</div>
-                  </>
-                );
-              })}
-              
-            </tbody>
-          </Table>
-        </Accordion>    
+              return (
+                <>
+                <tr ref={lastProduct ? lastProdElementRef : null} key={product.ID} 
+                onClick={() => handleSingle(product.ID)} >
+                  <td>{index + 1}</td>
+                  <td>{product.name}</td>
+                  <td>{product.dep}</td>
+                  <td>${product.price}</td>
+                  <td>{product.packSize}</td>
+                  <td>${product.PPGP.toFixed(3)}</td>
+                  <td>{product.pContent}g</td>
+                </tr>
+                </>
+              );
+            })}
+            
+          </tbody>
+        </Table>  
         <div>{loading && 'Loading...'}</div>
         <div>{error && 'Error'}</div>
 
