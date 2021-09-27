@@ -1,7 +1,9 @@
 import './styles/App.css';
 import React, { useState, useRef, useCallback } from 'react';
 import { useProdSingle, useProdComplex } from './useProdSearch';
-import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron, Table } from 'react-bootstrap';
+import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron, Table, Card, Accordion, Button } from 'react-bootstrap';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/js/src/collapse.js";
 
 export default function App() {
   const [query, setQuery] = useState('')
@@ -77,43 +79,57 @@ export default function App() {
         </InputGroup>
 
 
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Department</th>
-              <th>Price</th>
-              <th>Size</th>
-              <th>$ per g of Protein</th>
-              <th>Protein per 100g</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            {products.map((product, index) => {
+        <Accordion>
+            <Accordion.Toggle as={Card.Header} eventKey="0">
+              Click me!
+            </Accordion.Toggle>
+            <Accordion.Collapse eventKey="0">
+              <Card.Body>Hello! I'm the body</Card.Body>
+            </Accordion.Collapse>
+        </Accordion>
 
-              var lastProduct = false
-              /* If statement in conjunction with ternary operator below determines if final row*/
+        <Accordion>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Price</th>
+                <th>Size</th>
+                <th>$ per g of Protein</th>
+                <th>Protein per 100g</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              {products.map((product, index) => {
 
-              if (products.length === index + 1){ lastProduct = true }
+                var lastProduct = false
+                /* If statement in conjunction with ternary operator below determines if final row*/
 
-              return (
-                <tr ref={lastProduct ? lastProdElementRef : null} key={product.ID}>
-                  <td>{index + 1}</td>
-                  <td>{product.name}</td>
-                  <td>{product.dep}</td>
-                  <td>${product.price}</td>
-                  <td>{product.packSize}</td>
-                  <td>${product.PPGP.toFixed(3)}</td>
-                  <td>{product.pContent}g</td>
-                </tr>
-              );
-            })}
-            
-          </tbody>
-        </Table>
+                if (products.length === index + 1){ lastProduct = true }
 
+                return (
+                  <>
+                  <tr ref={lastProduct ? lastProdElementRef : null} key={product.ID} 
+                  data-toggle="collapse" data-target={"#accordion" + index} class="clickable">
+                    <td>{index + 1}</td>
+                    <td>{product.name}</td>
+                    <td>{product.dep}</td>
+                    <td>${product.price}</td>
+                    <td>{product.packSize}</td>
+                    <td>${product.PPGP.toFixed(3)}</td>
+                    <td>{product.pContent}g</td>
+                  </tr>
+                  <div id={"#accordion" + index} class="collapse">AAAAAAAAAAAAA</div>
+                  </>
+                );
+              })}
+              
+            </tbody>
+          </Table>
+        </Accordion>    
         <div>{loading && 'Loading...'}</div>
         <div>{error && 'Error'}</div>
 
