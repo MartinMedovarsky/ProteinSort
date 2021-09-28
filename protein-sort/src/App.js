@@ -57,16 +57,22 @@ export default function App() {
   //Constants for handling modal 
   const [show, setShow] = useState(false);
   //Product ID for search
-  const [single, setSingle] = useState('1')
+  const [single, setSingle] = useState(0)
 
   //Returned product info
-  const singleProduct = useProdSingle(single)
+  //const singleProduct = useProdSingle(single)
+  var modalIndex = 0;
 
   function handleSingle(e) {
-    setSingle(e)
+
+    setSingle(e);
+
     console.log("e: " + e)
-    console.log("Singleproduct below: ")
-    console.log(singleProduct)
+    //console.log(products[single].name)
+
+    //console.log("Singleproduct below: ")
+    //console.log(singleProduct)
+    
 
     //Query data for single item
 
@@ -110,15 +116,12 @@ export default function App() {
 
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title>{products.length > 0 && products[single].name}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+          <Modal.Body>Modal index: {single}</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
               Close
-            </Button>
-            <Button variant="primary" onClick={handleClose}>
-              Save Changes
             </Button>
           </Modal.Footer>
         </Modal>
@@ -158,7 +161,7 @@ export default function App() {
               return (
                 <>
                 <tr ref={lastProduct ? lastProdElementRef : null} key={product.ID} 
-                onClick={() => handleSingle(product.ID)} >
+                onClick={() => handleSingle(index)} >
                   <td>{index + 1}</td>
                   <td>{product.name}</td>
                   <td>{product.dep}</td>
