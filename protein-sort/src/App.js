@@ -43,12 +43,18 @@ export default function App() {
   }, [loading, hasMore])
 
   function handleSearch(e) {
+    //Set single to 0 so page doesnt try to render non-existent item when searching
+    setSingle(-1)
+
     setQuery(e.target.value)
     setPageNumber(1)
   }
 
   //Handles changing of the dropdown title selected
   function handleDropDown(e){
+    //Set single to 0 so page doesnt try to render non-existent item when searching
+    setSingle(-1)
+
     setDropdown(e.target.textContent)
   }
 
@@ -57,7 +63,7 @@ export default function App() {
   //Constants for handling modal 
   const [show, setShow] = useState(false);
   //Product ID for search
-  const [single, setSingle] = useState(0)
+  const [single, setSingle] = useState(-1)
 
   //Returned product info
   //const singleProduct = useProdSingle(single)
@@ -113,19 +119,21 @@ export default function App() {
           </DropdownButton>
         </InputGroup>
 
+        {/* Conditional to make sure modal doesnt render before api call is made */}
+        {single > -1 && 
 
-        <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>{products.length > 0 && products[single].name}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Modal index: {single}</Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
+          <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>{products[single].name}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Modal index: {single}</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        }
         
 
         {/* <Accordion>
