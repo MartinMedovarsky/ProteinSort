@@ -222,6 +222,33 @@ def addItem(r_dict, x):
 categoryIDs = ["1-E5BEE36E","1_D5A2236","1_DEB537E","1_6E4F4E4","1_39FD49C","1_ACA2FC2","1_5AF3A0A"]
 
 totalItems = 0 #Used to count total entries, even discarded ones
+
+#Inital get request to get cookies
+#Check request headers
+
+initialHeaders = {"Host":"www.woolworths.com.au",
+                    "User-Agent":"Martys Epic User Agent",
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                    "Accept-Language": "en-US,en;q=0.5",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    "DNT": "1",
+                    "Connection": "keep-alive",
+                    "Upgrade-Insecure-Requests": "1",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": "same-origin",
+                    "Pragma": "no-cache",
+                    "Cache-Control": "no-cache"}
+
+initialR = requests.get('https://www.woolworths.com.au', headers=initialHeaders)
+print(initialR)
+print("-----------")
+#Cookies to be used in sending post requests
+initialR_cookies = initialR.headers['Set-Cookie']
+print(initialR_cookies)
+
+
+
 for ID in categoryIDs:
     morePages = True
     currentPage = 1
@@ -234,11 +261,15 @@ for ID in categoryIDs:
                     "url":"a",
                     "formatObject":"{}"}
 
-        headers = {"User-Agent": "Marty Epic User Agent bruhhhhhh",
-                    "Origin": "https://www.woolworths.com.au"}
+        headers = {"User-Agent": "Martys Epic User Agent",
+                    "Origin": "www.woolworths.com.au",
+                    "Content-Type": "application/json",
+                    "Cookie": initialR_cookies}
 
-        r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', data=payload, headers=headers)
+        r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', data=payload, headers=headers, timeout=4)
+        print(r)
         r_dict = r.json()
+
 
         #Amount of item in the api request. Normally 32 but can be lower.
         itemCount = len(r_dict["Bundles"])

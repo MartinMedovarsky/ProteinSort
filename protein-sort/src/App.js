@@ -1,7 +1,7 @@
 import './styles/App.css';
 import React, { useState, useRef, useCallback } from 'react';
 import { useProdSingle, useProdComplex } from './useProdSearch';
-import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron, Table, Button, Modal} from 'react-bootstrap';
+import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron, Table, Button, Modal, Col, Row, Image} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/js/src/collapse.js";
 
@@ -70,18 +70,8 @@ export default function App() {
   var modalIndex = 0;
 
   function handleSingle(e) {
-
     setSingle(e);
-
     console.log("e: " + e)
-    //console.log(products[single].name)
-
-    //console.log("Singleproduct below: ")
-    //console.log(singleProduct)
-    
-
-    //Query data for single item
-
     //Display modal
     handleShow()
   }
@@ -122,11 +112,25 @@ export default function App() {
         {/* Conditional to make sure modal doesnt render before api call is made */}
         {single > -1 && 
 
-          <Modal show={show} onHide={handleClose}>
+          <Modal show={show} onHide={handleClose} size="lg">
             <Modal.Header closeButton>
               <Modal.Title>{products[single].name}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Modal index: {single}</Modal.Body>
+
+            <Modal.Body className="show-grid">
+              <Container>
+                <Row>
+                  <Col md={4}>
+                    <Image src={products[single].imgURLMed} fluid></Image>
+                  </Col>
+                  <Col md={8}>
+                    <p>{products[single].description}</p>
+                  </Col>
+                </Row>
+                <Row></Row>
+            </Container>
+
+            </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>
                 Close
