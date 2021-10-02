@@ -245,9 +245,18 @@ print(initialR)
 print("-----------")
 #Cookies to be used in sending post requests
 initialR_cookies = initialR.headers['Set-Cookie']
-print(initialR_cookies)
+initalR_cookies_split = initialR_cookies.split(' ')
+print(initalR_cookies_split)
+print("------------")
 
+#Finding the required cookie in the string of cookies
+bm_sz = ""
+for item in initalR_cookies_split:
+    if "bm_sz" in item:
+        print(item)
+        bm_sz = item
 
+#It has something to do with the cookies, we are getting them but not sending them properly
 
 for ID in categoryIDs:
     morePages = True
@@ -262,12 +271,14 @@ for ID in categoryIDs:
                     "formatObject":"{}"}
 
         headers = {"User-Agent": "Martys Epic User Agent",
-                    "Origin": "www.woolworths.com.au",
+                    "Origin": "https://www.woolworths.com.au",
                     "Content-Type": "application/json",
-                    "Cookie": initialR_cookies}
+                    "Cookie": bm_sz
+                    }
 
-        r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', data=payload, headers=headers, timeout=4)
+        r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', data=payload, headers=headers)
         print(r)
+        print(r.headers)
         r_dict = r.json()
 
 
