@@ -270,13 +270,14 @@ for ID in categoryIDs:
                     "url":"a",
                     "formatObject":"{}"}
 
-        headers = {"User-Agent": "Martys Epic User Agent",
+        headers = { "User-Agent": "Martys Epic User Agent",
                     "Origin": "https://www.woolworths.com.au",
                     "Content-Type": "application/json",
                     "Cookie": bm_sz
                     }
 
-        r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', data=payload, headers=headers)
+        r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', headers=headers, params=payload)
+
         print(r)
         print(r.headers)
         r_dict = r.json()
