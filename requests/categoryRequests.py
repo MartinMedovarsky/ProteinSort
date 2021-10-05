@@ -155,10 +155,10 @@ def calculations(r_dict, x):
 
 
 #Method returns string cleaned of residual html tags
-#def cleanHTML(str):
-#    cleanr = re.compile('<.*?>')
-#    cleantext = re.sub(cleanr, '', str)
-#    return cleantext
+def cleanHTML(str):
+    cleanr = re.compile('<.*?>')
+    cleantext = re.sub(cleanr, ' ', str)
+    return cleantext
 
 addedIDs = []
 #Adds data and adds item to database
@@ -182,13 +182,18 @@ def addItem(r_dict, x):
         if (PPGP == 0):
             return
 
+        #Check if there is a description, then clean of tags
+        description = r_dict["Bundles"][x]["Products"][0]["RichDescription"]
+        if (description is None):
+            description = "no description"
+        else:
+            description = cleanHTML(description)
+
         
 
         print ("PPGP: " + str(PPGP) + " PPS: " + str(PPS) + " pContent: " + str(pContent) + " servings: " + str(servings))
 
         name = r_dict["Bundles"][x]["Name"]
-        description = r_dict["Bundles"][x]["Products"][0]["RichDescription"]
-        #print(cleanHTML(description))
         imgURL = r_dict["Bundles"][x]["Products"][0]["LargeImageFile"]
         imgURLMed = r_dict["Bundles"][x]["Products"][0]["MediumImageFile"]
         dep = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["piesdepartmentnamesjson"][1:-1]
