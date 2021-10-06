@@ -4,6 +4,7 @@ import { useProdSingle, useProdComplex } from './useProdSearch';
 import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron, Table, Button, Modal, Col, Row, Image} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/js/src/collapse.js";
+import ScrollArrow from './scrollArrow'
 
 //Notes for doing modals:
 //Have const that represent all data in modal
@@ -113,7 +114,7 @@ export default function App() {
         {single > -1 && 
 
           <Modal show={show} onHide={handleClose} size="lg">
-            <Modal.Header closeButton>
+            <Modal.Header>
               <Modal.Title>{products[single].name}</Modal.Title>
             </Modal.Header>
 
@@ -121,10 +122,14 @@ export default function App() {
               <Container>
                 <Row>
                   <Col md={4}>
-                    <Image src={products[single].imgURLMed} fluid></Image>
+                    <div></div>
+                    <Image src={products[single].imgURLMed} fluid
+                    onClick={()=> window.open("https://www.woolworths.com.au/shop/productdetails/" + products[single].ID, "_blank")}></Image>
                   </Col>
                   <Col md={8}>
-                    <p>{products[single].description}</p>
+                    <div class="prodDesc">
+                      {products[single].description}
+                    </div>
                   </Col>
                 </Row>
                 <Row></Row>
@@ -132,22 +137,16 @@ export default function App() {
 
             </Modal.Body>
             <Modal.Footer>
+              <Button variant="secondary" onClick={()=> window.open("https://www.woolworths.com.au/shop/productdetails/" + products[single].ID, "_blank")}>
+                Take me to Woolies
+              </Button>
               <Button variant="secondary" onClick={handleClose}>
                 Close
               </Button>
             </Modal.Footer>
           </Modal>
         }
-        
-
-        {/* <Accordion>
-            <Accordion.Toggle as={Card.Header} eventKey="0">
-              Click me!
-            </Accordion.Toggle>
-            <Accordion.Collapse eventKey="0">
-              <Card.Body>Hello! I'm the body</Card.Body>
-            </Accordion.Collapse>
-        </Accordion> */}
+      
 
         <Table striped bordered hover>
           <thead>
@@ -190,6 +189,8 @@ export default function App() {
         </Table>  
         <div>{loading && 'Loading...'}</div>
         <div>{error && 'Error'}</div>
+
+        <ScrollArrow></ScrollArrow>
 
       </Container>
       
