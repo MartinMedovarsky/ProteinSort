@@ -1,17 +1,21 @@
 import requests
 import time
-import csv
 import re
 import json
-import sqlite3
+import mysql.connector
+import os
 
-#Creating SQLite Database
-conn = sqlite3.connect('itemData.db')
+#Connecting to mysql database
+conn = mysql.connector.connect(
+    host = 'localhost',
+    user = 'root',
+    password = os.environ.get('proteinSortPass'),
+    database = 'proteinsort')
 c = conn.cursor()
 
-c.execute(""" DROP TABLE IF EXISTS itemDATA """)
+#c.execute(""" DROP TABLE IF EXISTS itemDATA """)
 
-c.execute("""CREATE TABLE itemDATA (
+c.execute("""CREATE TABLE IF NOT EXISTS itemDATA (
                 ID INTEGER PRIMARY KEY,
                 name TEXT,
                 description TEXT,
@@ -23,18 +27,13 @@ c.execute("""CREATE TABLE itemDATA (
                 packSize TEXT,
                 cupPrice FLOAT,
                 cupMeasure TEXT,
-                servings FLOAT,
+                servings TEXT,
                 pContent FLOAT,
                 PPGP FLOAT,
                 PPS FLOAT
 )""")
 
 conn.commit()
-
-#Clears current itemData CSV file.
-with open("itemData.csv", "w", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(["ID","name","description","imgURL","imgURLMed","dep","cat","price","packSize","cupPrice","cupMeasure","servings","pContent","PPGP","PPS"])
 
 
 #Checks if there are any more pages in the category
@@ -202,18 +201,9 @@ def addItem(r_dict, x):
         packSize = r_dict["Bundles"][x]["Products"][0]["PackageSize"]
         cupMeasure = r_dict["Bundles"][x]["Products"][0]["CupMeasure"]
 
-        with open("itemData.csv", "a", newline="") as file:
-            writer = csv.writer(file)
 
-            #Catches any outliers. Often to do with strange text encoding
-            try:
-                #Adding row to CSV
-                writer.writerow([ID, name, description, imgURL, imgURLMed, dep, cat, price, packSize, cupPrice, cupMeasure, servings, pContent, PPGP, PPS])
-            except:
-                return
-
-        c.execute(""" INSERT INTO itemDATA (ID, name, description, imgURL, imgURLMed, dep, cat, price, packSize, cupPrice, cupMeasure, servings, pContent, PPGP, PPS) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        c.execute(""" REPLACE INTO itemDATA (ID, name, description, imgURL, imgURLMed, dep, cat, price, packSize, cupPrice, cupMeasure, servings, pContent, PPGP, PPS) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                     (ID, name, description, imgURL, imgURLMed, dep, cat, price, packSize, cupPrice, cupMeasure, servings, pContent, PPGP, PPS))
         conn.commit()
 
@@ -283,8 +273,8 @@ for ID in categoryIDs:
 
         r = requests.post('https://www.woolworths.com.au/apis/ui/browse/category', headers=headers, params=payload)
 
-        print(r)
-        print(r.headers)
+        #print(r)
+        #print(r.headers)
         r_dict = r.json()
 
 
