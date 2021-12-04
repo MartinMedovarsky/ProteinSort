@@ -46,6 +46,7 @@ export function useProdComplex(query, dropdown, pageNumber) {
             params: { search: query, dep: dropdown, page: pageNumber},
             cancelToken: new axios.CancelToken(c => cancel = c)    
         }).then(res => {
+            console.log(res)
             setProducts(prevProducts => {
                 //Combining new and old products in a set to remove duplicates, then converting back to array
                 return [...new Set([...prevProducts, ...res.data.data])]

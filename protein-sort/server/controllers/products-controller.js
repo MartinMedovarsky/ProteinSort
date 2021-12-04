@@ -8,8 +8,14 @@ attachPaginate();
 
 //import database
 var knex = require('knex')({
-    client: 'sqlite3',
-    connection: { filename: 'server/db/itemData.db' }
+    client: 'mysql',
+    connection: {
+      host : '127.0.0.1',
+      port : 3306,
+      user : 'root',
+      password : process.env.proteinSortPass,
+      database : 'proteinsort'
+    }
   })
 
 //Complex product query
@@ -28,10 +34,9 @@ exports.complex = async (req, res) => {
         department = ""
     } 
 
-
     knex
         .select('*')
-        .from('itemData')
+        .from('itemdata')
         .where('name', 'like', `%${search}%`) //%% chars search for term in any position
         .andWhere('dep', 'like', `%${department}%`)
         .orderBy('PPGP')
@@ -41,7 +46,7 @@ exports.complex = async (req, res) => {
             res.json(productData)
         })
         .catch(err => {
-            res.json({ message: `There was an error retrieving a single product: ${err}`})
+            res.json({ message: `There was an error retrieving the products: ${err}`})
         })
 }
 
@@ -52,7 +57,7 @@ exports.productSingle = async (req, res) => {
     console.log('ID SENT: ' + req.query.id)
     knex
         .select('*')
-        .from('itemData')
+        .from('itemdata')
         .where('ID', req.query.id) //find the product based on id
         .then(productData => {
             //send the individual product
