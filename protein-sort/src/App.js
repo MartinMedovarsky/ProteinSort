@@ -1,7 +1,7 @@
 import './styles/App.css';
 import React, { useState, useRef, useCallback } from 'react';
-import { useProdSingle, useProdComplex } from './useProdSearch';
-import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Jumbotron, Table, Button, Modal, Col, Row, Image} from 'react-bootstrap';
+import { useProdComplex } from './useProdSearch';
+import { Dropdown, DropdownButton, FormControl, InputGroup, Container, Table, Button, Modal, Col, Row, Image} from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/js/src/collapse.js";
 import ScrollArrow from './scrollArrow'
@@ -66,10 +66,6 @@ export default function App() {
   //Product ID for search
   const [single, setSingle] = useState(-1)
 
-  //Returned product info
-  //const singleProduct = useProdSingle(single)
-  var modalIndex = 0;
-
   function handleSingle(e) {
     setSingle(e);
     console.log("e: " + e)
@@ -85,10 +81,10 @@ export default function App() {
   return (
     <>
       <Container fluid='lg'>
-        <Jumbotron>
+        <Container>
           <h1>Protein Sort</h1>
           <p>Query and sort Woolworths' products based on specific protein and cost information.</p>
-        </Jumbotron>
+        </Container>
 
         <InputGroup className="mb-3">
           <FormControl aria-label="Text input with dropdown button" onChange={handleSearch} />

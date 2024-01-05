@@ -3,17 +3,14 @@ import time
 import re
 import json
 import mysql.connector
-import os
 
 #Connecting to mysql database
 conn = mysql.connector.connect(
     host = 'localhost',
     user = 'root',
-    password = os.environ.get('proteinSortPass'),
+    password = 'password',
     database = 'proteinsort')
 c = conn.cursor()
-
-#c.execute(""" DROP TABLE IF EXISTS itemDATA """)
 
 c.execute("""CREATE TABLE IF NOT EXISTS itemDATA (
                 ID INTEGER PRIMARY KEY,
@@ -44,7 +41,7 @@ def pageCheck(itemCount):
 
 
 #Parses JSON data and prepares it for adding to a database
-#Calcualates values needed for the database, including price per gram of protein
+#Calculates values needed for the database, including price per gram of protein
 def calculations(r_dict, x):
     PPGP = 0 #Price Per Gram of Protein
     PPS = 0 #Protein Per Serve
@@ -182,7 +179,7 @@ def addItem(r_dict, x):
             return
 
         #Check if there is a description, then clean of tags
-        description = r_dict["Bundles"][x]["Products"][0]["RichDescription"]
+        description = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["description"]
         if (description is None):
             description = "no description"
         else:
@@ -245,13 +242,13 @@ print(initalR_cookies_split)
 print("------------")
 
 #Finding the required cookie in the string of cookies
+#bm_sz is used by Akami bot manager, we need to provide it
+#Or our requests will get denied
 bm_sz = ""
 for item in initalR_cookies_split:
     if "bm_sz" in item:
         print(item)
         bm_sz = item
-
-#It has something to do with the cookies, we are getting them but not sending them properly
 
 for ID in categoryIDs:
     morePages = True
@@ -277,7 +274,6 @@ for ID in categoryIDs:
         #print(r.headers)
         r_dict = r.json()
 
-
         #Amount of item in the api request. Normally 32 but can be lower.
         itemCount = len(r_dict["Bundles"])
 
@@ -294,13 +290,6 @@ for ID in categoryIDs:
             #Checks if the selected product contains protein nutritional information
             #Could use array and loop to get rid of some of these elifs
             conditions = ["\"0", "null", "\"Approx. 0", "\"Approx.0", "\"<0"]
-
-            #containsP = True
-
-            #for cond in conditions:
-            #    if info.find('Protein Quantity Per 100g - Total - NIP\",\"Value\":' + cond) > 0:
-            #        print("No protein \n")
-            #        containsP = False
 
             if info is None or info.find("Protein Quantity Per 100g") == -1 or info.find('"Protein Quantity Per 100g - Total - NIP\",\"Value\":\"0') > 0:
                 print("No protein \n")
@@ -320,4 +309,6 @@ for ID in categoryIDs:
 
         currentPage += 1
         morePages = pageCheck(itemCount) 
+        
+        #Sleep between each request to prevent getting blocked
         time.sleep(1.5)
