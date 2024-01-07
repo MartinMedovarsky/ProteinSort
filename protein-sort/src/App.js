@@ -15,6 +15,11 @@ export default function App() {
   const [query, setQuery] = useState('')
   const [dropdown, setDropdown] = useState('All Departments')
 
+  const headers = {"Name":"name","Department":"department","Price":"price","Size":"packSize","$ per g of Protein":"PPGP","Protein per 100g":"pContent"}
+  
+  const [order, setOrder] = useState("asc")
+  const [sortAttribute, setSortAttribute] = useState("PPGP")
+
   const [pageNumber, setPageNumber] = useState(1)
 
   const {
@@ -22,7 +27,7 @@ export default function App() {
     hasMore,
     loading,
     error
-  } = useProdComplex(query, dropdown, pageNumber)
+  } = useProdComplex(query, dropdown, pageNumber, order, sortAttribute)
 
   //Used to load more items when scrolling
   //Whenever an element containing lastProdElementRef
@@ -53,7 +58,7 @@ export default function App() {
 
   //Handles changing of the dropdown title selected
   function handleDropDown(e){
-    //Set single to 0 so page doesnt try to render non-existent item when searching
+    //Set single to 0 so page doesn't try to render non-existent item when searching
     setSingle(-1)
 
     setDropdown(e.target.textContent)
@@ -77,13 +82,26 @@ export default function App() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  function handleHeaderClick(value) {
+    if (value == "department"){
+      return
+    } else if (sortAttribute == value && order == "asc"){
+      setOrder("desc")
+    } else { setOrder("asc") }
+    setSortAttribute(value)
+    
+    setSingle(-1)
+
+    console.log(sortAttribute, order)
+  }
+
 
   return (
     <>
       <Container fluid='lg'>
-        <Container>
-          <h1>Protein Sort</h1>
-          <p>Query and sort Woolworths' products based on specific protein and cost information.</p>
+        <Container style={{marginTop:"50px"}}>
+          <h1 style={{color:"#178841"}}>Protein Sort</h1>
+          <p style={{fontWeight:500}}>Query and sort Woolworths' products based on specific protein and cost information.</p>
         </Container>
 
         <InputGroup className="mb-3">
@@ -96,7 +114,8 @@ export default function App() {
             align="end"
           >
             <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>All Departments</div></Dropdown.Item>
-            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Meat, Seafood &amp; Deli</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Poultry, Meat &amp; Seafood</div></Dropdown.Item>
+            <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Deli &amp; Chilled Meals</div></Dropdown.Item>
             <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Fruit &amp; Veg</div></Dropdown.Item>
             <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Dairy, Eggs &amp; Fridge</div></Dropdown.Item>
             <Dropdown.Item href="#"><div onClick={(e) => handleDropDown(e)}>Bakery</div></Dropdown.Item>
@@ -147,13 +166,14 @@ export default function App() {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Department</th>
-              <th>Price</th>
-              <th>Size</th>
-              <th>$ per g of Protein</th>
-              <th>Protein per 100g</th>
+              <th style={{color:"#178841"}}>#</th>
+              {Object.entries(headers).map(([header,value])  => (
+                <>
+                  {value == sortAttribute && order == "asc" ? <th key={value} style={{color:"#178841"}} onClick={() => handleHeaderClick(value)}>{header} {'\u21E7'}</th> : <></>} 
+                  {value == sortAttribute && order == "desc" ? <th key={value} style={{color:"#178841"}} onClick={() => handleHeaderClick(value)}>{header} {'\u21E9'}</th> : <></>}
+                  {value != sortAttribute ? <th key={value} onClick={() => handleHeaderClick(value)}>{header} {'\u21E7'}</th> : <></>}
+                </>
+              ))}
             </tr>
           </thead>
           <tbody>

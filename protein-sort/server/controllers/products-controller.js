@@ -21,15 +21,14 @@ var knex = require('knex')({
 //Complex product query
 exports.complex = async (req, res) => {
 
-    //Maybe perform query first, consider item category, then sort, then pagination, then return page based set?
     var search = req.query.search
     var department = req.query.dep //Limit results to a particular category
-    //var sortType = req.body.sortType //What are we sorting by
-    //var sortDir = req.body.sortDir  //Sort ascending / descending
     var page = req.query.page 
+    var order = req.query.order
+    var sortAttribute = req.query.sortAttribute
     var perPage = 20
 
-    //Make deparment equal nothing if all departments are selected
+    //Make department equal nothing if all departments are selected
     if (department == "All Departments") {
         department = ""
     } 
@@ -39,7 +38,7 @@ exports.complex = async (req, res) => {
         .from('itemdata')
         .where('name', 'like', `%${search}%`) //%% chars search for term in any position
         .andWhere('dep', 'like', `%${department}%`)
-        .orderBy('PPGP')
+        .orderBy(sortAttribute, order)
         .paginate({ perPage: perPage, currentPage: page, isLengthAware: true})
         .then(productData => {
             //send the individual product
@@ -53,7 +52,7 @@ exports.complex = async (req, res) => {
 
 //Single Product query
 exports.productSingle = async (req, res) => {
-    //Find specific product in ther database and return it
+    //Find specific product in there database and return it
     console.log('ID SENT: ' + req.query.id)
     knex
         .select('*')

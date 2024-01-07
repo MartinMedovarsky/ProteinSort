@@ -42,15 +42,3 @@ app.use(function (err, req, res, next) {
   app.listen(PORT, function() {
     console.log(`Server is running on: ${PORT}`)
   })
-
-// app.get('/api/products', (req, res) => {
-//     const products = [
-//         {id: 1, name: 'apple', price: '123'},
-//         {id: 2, name: 'Bread', price: '22'},
-//         {id: 3, name: 'Cabbage', price: '32'}
-//     ];
-
-//     res.json(products);
-// });
-
-// app.listen(port, () => console.log(`Server started on port ${port}`));

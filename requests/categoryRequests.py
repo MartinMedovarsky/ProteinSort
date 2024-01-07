@@ -147,11 +147,15 @@ def addItem(r_dict, x):
         PPGP, PPS, pContent, servings, cupPrice = calculations(r_dict, x)
     except:
         return
+    
+    #Final checks to try catch any outliers
+    if (PPGP == 0):
+        return
 
     #Check if there is a description, then clean of tags
     description = r_dict["Bundles"][x]["Products"][0]["AdditionalAttributes"]["description"]
-    if description is None:
-        description = "no description"
+    if description is None or description == "":
+        description = "No description."
     else:
         description = cleanHTML(description)
 
@@ -205,7 +209,7 @@ for item in initalR_cookies_split:
 
 #The ID codes used within API calls
 #Using categories instead of all to eliminate non-food categories
-categoryIDs = ["1-E5BEE36E","1_D5A2236","1_DEB537E","1_6E4F4E4","1_39FD49C","1_ACA2FC2","1_5AF3A0A"]
+categoryIDs = ["1-E5BEE36E","1_D5A2236","1_3151F6F","1_DEB537E","1_6E4F4E4","1_39FD49C","1_ACA2FC2","1_5AF3A0A"]
 
 #Main logic loop
 #Outer loop cycles through categories

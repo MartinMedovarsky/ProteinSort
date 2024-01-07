@@ -25,7 +25,7 @@ export function useProdSingle(single) {
     return { singleProduct }
 }
 
-export function useProdComplex(query, dropdown, pageNumber) {
+export function useProdComplex(query, dropdown, pageNumber, order, sortAttribute) {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
     const [products, setProducts] = useState([])
@@ -33,7 +33,7 @@ export function useProdComplex(query, dropdown, pageNumber) {
 
     useEffect(() => {
         setProducts([])
-    }, [query, dropdown])
+    }, [query, dropdown, order, sortAttribute])
 
     useEffect(() => {
         setLoading(true)
@@ -43,7 +43,7 @@ export function useProdComplex(query, dropdown, pageNumber) {
         axios({
             method: 'GET',
             url: 'http://localhost:5000/products/complex',
-            params: { search: query, dep: dropdown, page: pageNumber},
+            params: { search: query, dep: dropdown, page: pageNumber, order: order, sortAttribute: sortAttribute},
             cancelToken: new axios.CancelToken(c => cancel = c)    
         }).then(res => {
             console.log(res)
@@ -61,7 +61,7 @@ export function useProdComplex(query, dropdown, pageNumber) {
             setError(true)
         })
         return () => cancel()
-    }, [query, dropdown, pageNumber])
+    }, [query, dropdown, pageNumber, order, sortAttribute])
 
     //console.log("Why am i getting printed multiple times")
     //console.log(products)
