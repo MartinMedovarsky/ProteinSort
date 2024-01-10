@@ -1,4 +1,5 @@
 # ProteinSort
+
 Protein sort is a webapp that uses data gathered from Woolworths' API to display and filter
 granular information about product protein content.
 <br>
@@ -11,6 +12,8 @@ Front end built using React, and React-Bootstrap. Backend using Node, Express.JS
 <br>
 Data collected from Woolworths and cleaned using Python, then stored in an MySQL DB. Located under `/requests`
 <br><br>
+
+![](demo.gif)
 
 ## Setup
 1. Pull the repository 
