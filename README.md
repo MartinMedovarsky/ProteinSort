@@ -16,7 +16,7 @@ Data collected from Woolworths and cleaned using Python, then stored in an MySQL
 ![](demo.gif)
 
 ## Setup
-1. Pull the repository 
+1. Clone the repository 
 2. Make sure you have a MySQL instance running. The default credentials are: 
     - host = 'localhost',
     - user = 'root',
